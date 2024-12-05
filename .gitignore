@@ -1,0 +1,11 @@
+.env
+.env.testing
+.env.backup
+.env.production
+/.fleet
+/.idea
+/.vscode
+.vscode/*
+!.vscode/extensions.json
+.vs
+node_modules
