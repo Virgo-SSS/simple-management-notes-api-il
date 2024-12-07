@@ -1,15 +1,43 @@
+import Joi from 'joi';
+import NoteModel from '../models/note.js';
 
-const index = (req, res) => {
-    // TODO: IMPLEMENT LOGIC TO RETURN ALL NOTES DATA
+const index = async (req, res) => {
+
+    const [rows, fields] = await NoteModel.all();
+
     res.status(200).json({
-        message: 'GET /notes'
+        status: 'success',
+        message: 'Successfully retrieved all notes',
+        data: rows,
     });
 }
 
-const store = (req, res) => {
-    // TODO: IMPLEMENT LOGIC TO STORE A NEW NOTE
+const store = async (req, res) => {
+    // get body from request
+    const note = req.body;
+
+    // validate request
+    const schema = Joi.object({
+        title: Joi.string().required(),
+        note: Joi.string().required(),
+        datetime: Joi.date().iso().required()
+    });
+
+    const { error } = schema.validate(note);
+
+    if (error) {
+        return res.status(400).json({
+            status: 'fail',
+            message: error.details[0].message,
+        });
+    }
+
+    // create note
+    await NoteModel.create(note);
+
     res.status(200).json({
-        message: 'POST /notes'
+        status: 'success',
+        message: 'Successfully created a new note',
     });
 }
 
