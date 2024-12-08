@@ -9,10 +9,35 @@ const create = async (note) => {
 
 const all = async () => {
     const query = 'SELECT * FROM notes';
-    return db.query(query);
+    return db.execute(query);
+}
+
+const findById = async (id) => {
+    const query = 'SELECT * FROM notes WHERE id = ?';
+    const values = [id];
+
+    const [rows, fields] = await db.execute(query, values);
+    return rows.length ? rows : false;
+}
+
+const destroy = async (id) => {
+    const query = 'DELETE FROM notes WHERE id = ?';
+    const values = [id];
+
+    return db.execute(query, values);
+}
+
+const update = async (id, note) => {
+    const query = 'UPDATE notes SET title = ?, datetime = ?, note = ? WHERE id = ?';
+    const values = [note.title, note.datetime, note.note, id];
+
+    return db.execute(query, values);
 }
 
 export default {
     all,
-    create
+    findById,
+    create,
+    destroy,
+    update,
 }
